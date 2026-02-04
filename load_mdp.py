@@ -1,8 +1,10 @@
 import os
 import sys
 
-from medibang.brush2 import read_brush2, write_brush_json
-from medibang.brush2_options import translate_options
+from medibang.brush2 import read_brush2
+from medibang.brush2_options import OPTIONS
+from translate import translate_options, remove_options
+from brush_json import write_brush_json
 
 
 def usage():
@@ -17,7 +19,8 @@ def main():
         return
     
     brush_info = read_brush2(sys.argv[1])
-    brush_info = translate_options(brush_info)
+    brush_info = remove_options(brush_info)
+    brush_info = translate_options(OPTIONS, brush_info)
     write_brush_json(brush_info, sys.argv[2])
 
 if __name__ == "__main__":

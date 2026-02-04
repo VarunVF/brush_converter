@@ -1,5 +1,8 @@
 import configparser
-import json
+
+
+def clamp_brush_spacing(spacing: int):
+    return max(2, min(spacing, 100))
 
 
 def read_brush2(filepath: str) -> dict:
@@ -16,17 +19,10 @@ def read_brush2(filepath: str) -> dict:
 
 
 def write_brush2(brush_info: dict, filepath: str):
+    for brush, options in brush_info.items():
+        options["brushSpacing"] = clamp_brush_spacing(options["brushSpacing"])
+
     config = configparser.ConfigParser()
     config.read_dict(brush_info)
     with open(filepath, "w") as f:
         config.write(f, space_around_delimiters=False)
-
-
-def read_brush_json(filepath: str) -> dict:
-    with open(filepath, "r") as f:
-        brush_info = json.load(f)
-    return brush_info
-
-def write_brush_json(brush_info: dict, filepath: str):
-    with open(filepath, "w") as f:
-        json.dump(brush_info, f, indent=4)

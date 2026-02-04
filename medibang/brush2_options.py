@@ -1,5 +1,5 @@
 # Translate options to their human-readable form
-FORWARD_TRANSLATION = {
+OPTIONS = {
     "min": "minimumBrushSize",  # range 0.0 to 1.0
     "psize": "pressureChangesSize",  # true or false
     "palpha": "pressureChangesOpacity",  # true or false
@@ -12,28 +12,10 @@ FORWARD_TRANSLATION = {
     "option7": "hueJitter",  # range 0 to 100
 }
 
-# Reverse the mapping of keys to values
-BACKWARD_TRANSLATION = {val: key for key, val in FORWARD_TRANSLATION.items()}
-
-
-def translate(key: str):
-    # Translate if we can, otherwise leave it alone
-    return FORWARD_TRANSLATION.get(key, key)
-
-
-def encode(key: str):
-    return BACKWARD_TRANSLATION.get(key, key)
-
-
-def translate_options(brush_info: dict):
-    return {
-        section: {translate(key): val for key, val in options.items()}
-        for section, options in brush_info.items()
-    }
-
-
-def encode_options(brush_info: dict):
-    return {
-        section: {encode(key): val for key, val in options.items()}
-        for section, options in brush_info.items()
-    }
+# Options that we remove during loading and add back during saving.
+MEDIBANG_SPECIFIC = {
+    # option: default_value
+    "group": "-1",
+    "cloudid": "-1",
+    "clouduuid": "",
+}
