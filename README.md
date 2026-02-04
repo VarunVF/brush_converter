@@ -12,13 +12,13 @@ Many popular brush formats are proprietary and undocumented, making it difficult
 Conversion between formats may result in loss of detail. Brush settings may not be readable or may be incompatible with other software.
 
 Applications currently supported:
-- Medibang Paint
 - GIMP
+- Medibang Paint
 
 This project hopes to eventually support converting between these applications:
 - Clip Studio Paint
-- Procreate
-- IbisPaint
-- Photoshop
-- Medibang Paint
 - GIMP
+- IbisPaint
+- Medibang Paint
+- Photoshop
+- Procreate
