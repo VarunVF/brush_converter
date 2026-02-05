@@ -35,9 +35,11 @@ def read_brush2(filepath: str) -> dict:
 
     output = dict()
     for section in config.sections():
-        output[section] = dict()
-        for key in config[section].keys():
-            output[section][key] = config[section][key]
+        # We can only handle bitmap brushes for now
+        if section != "General" and config[section]["type"] == "bitmap":
+            output[section] = dict()
+            for key in config[section].keys():
+                output[section][key] = config[section][key]
     
     return output
 

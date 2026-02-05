@@ -1,3 +1,4 @@
+import os
 import struct
 
 from PIL import Image
@@ -69,17 +70,19 @@ def read_gbr(filepath: str) -> tuple[dict, Image.Image, str]:
     return brush_info, img, bitmap_filename_str
 
 
-def write_gbr(brush_info: dict, filepath: str):
+def write_gbr(brush_info: dict, bitmap_dir: str, output_dir: str):
     for brush, options in brush_info.items():
         # Header contains: seven uint32_t (4-byte unsigned) integers + brush name (incl. null terminator)
         brush_name = options["name"]
         brush_name_size = len(brush_name) + 1
         header_size = 7*4 + brush_name_size
         magic_number = (ord('G') << 24) + (ord('I') << 16) + (ord('M') << 8) + ord('P')
-        brush_spacing_pct = calculate_spacing_pct(float(options["brushSpacing"]), float(options["brushWidth"]))
+        brush_spacing_pct = calculate_spacing_pct(float(options["brushSpacing"]), float(options["width"]))
 
         # Load the PNG file as raw pixels
-        img = Image.open(options["bitmapfile"])
+        # Expect the bitmap file to be in the bitmap_dir
+        bitmap_filepath = os.path.join(bitmap_dir, options["bitmapfile"])
+        img = Image.open(bitmap_filepath)
         brush_width, brush_height = img.size
 
         # Find the bit depth
@@ -100,10 +103,11 @@ def write_gbr(brush_info: dict, filepath: str):
             magic_number,
             brush_spacing_pct,
             bytes(brush_name, encoding="utf-8"),
-            bytes(img.getdata())
+            img.tobytes()
         )
 
-        with open(filepath, "wb") as f:
+        output_filepath = os.path.join(output_dir, f"{brush_name}.gbr")
+        with open(output_filepath, "wb") as f:
             f.write(file_bytes)
 
         img.close()
