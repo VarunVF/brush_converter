@@ -22,6 +22,8 @@ The raw data from the QR code starts with "IPBZ". The rest of the data is binary
 
 Primarily uses the Brush2.ini config file to store brush settings. Bitmap brushes reference a bitmap file. Default brushes reference a .bs "script" file which is actually a Lua script.
 
+Brush bitmaps need to be inverted (byte = 255 - byte) for use in Medibang.
+
 ### Brush Scripts
 
 This brush script draws red dots with a diameter of 10px.

@@ -12,6 +12,8 @@ OPTIONS = {
     "option7": "hueJitter",  # range 0 to 100
 }
 
+REVERSE_OPTIONS = {v: k for k, v in OPTIONS.items()}
+
 # Options that we remove during loading and add back during saving.
 MEDIBANG_SPECIFIC = {
     # option: default_value
