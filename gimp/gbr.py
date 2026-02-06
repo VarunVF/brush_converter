@@ -12,7 +12,7 @@ def calculate_spacing_pct(spacing: float, brush_width: int):
     return int(spacing / brush_width * 100.0)
 
 
-def read_gbr(filepath: str) -> tuple[dict, Image.Image, str]:
+def read_gbr(filepath: str) -> tuple[list[dict], Image.Image, str]:
     f = open(filepath, "rb")
 
     header_size = struct.unpack(">I", f.read(4))[0]
@@ -47,41 +47,44 @@ def read_gbr(filepath: str) -> tuple[dict, Image.Image, str]:
         raise RuntimeError(f"Unsupported color depth: {color_depth}")
     bitmap_filename_str = f"{brush_name_str}.png"
 
-    brush_info = {
-        "0": {
+    # A gbr file contains info for a single brush => JSON is an array of one brush object
+    brush_info = [
+        {
             "name": brush_name_str,
             "type": "bitmap",
             "width": brush_width,
-            "minimumBrushSize": f"{0.0}",
-            "opacity": "1",
-            "pressureChangesSize": "true",
-            "pressureChangesOpacity": "false",
+            "minimumBrushSize": 0.0,
+            "opacity": 1,
+            "pressureChangesSize": True,
+            "pressureChangesOpacity": False,
             "bitmapfile": bitmap_filename_str,
-            "brushSpacing": f"{calculate_spacing(brush_spacing_pct, brush_width)}",
-            "doRotateAlong": "1",
-            "rotateAngle": "50",
-            "randomRotateAngle": "0",
-            "applyForegroundColor": "1",
-            "colorJitter": "0",
-            "hueJitter": "0",
+            "brushSpacing": calculate_spacing(brush_spacing_pct, brush_width),
+            "doRotateAlong": 1,
+            "rotateAngle": 50,
+            "randomRotateAngle": 0,
+            "applyForegroundColor": 1,
+            "colorJitter": 0,
+            "hueJitter": 0,
         }
-    }
+    ]
 
     return brush_info, img, bitmap_filename_str
 
 
-def write_gbr(brush_info: dict, bitmap_dir: str, output_dir: str):
-    for brush, options in brush_info.items():
+def write_gbr(brush_info: list[dict], bitmap_dir: str, output_dir: str):
+    # TODO update for new json structure
+
+    for brush in brush_info:
         # Header contains: seven uint32_t (4-byte unsigned) integers + brush name (incl. null terminator)
-        brush_name = options["name"]
+        brush_name = brush["name"]
         brush_name_size = len(brush_name) + 1
         header_size = 7*4 + brush_name_size
         magic_number = (ord('G') << 24) + (ord('I') << 16) + (ord('M') << 8) + ord('P')
-        brush_spacing_pct = calculate_spacing_pct(float(options["brushSpacing"]), float(options["width"]))
+        brush_spacing_pct = calculate_spacing_pct(float(brush["brushSpacing"]), float(brush["width"]))
 
         # Load the PNG file as raw pixels
         # Expect the bitmap file to be in the bitmap_dir
-        bitmap_filepath = os.path.join(bitmap_dir, options["bitmapfile"])
+        bitmap_filepath = os.path.join(bitmap_dir, brush["bitmapfile"])
         img = Image.open(bitmap_filepath)
         brush_width, brush_height = img.size
 
@@ -106,6 +109,7 @@ def write_gbr(brush_info: dict, bitmap_dir: str, output_dir: str):
             img.tobytes()
         )
 
+        os.makedirs(output_dir, exist_ok=True)
         output_filepath = os.path.join(output_dir, f"{brush_name}.gbr")
         with open(output_filepath, "wb") as f:
             f.write(file_bytes)

@@ -6,6 +6,30 @@ It translates brushes into a readable JSON format which can then be converted in
 
 Many popular brush formats are proprietary and undocumented, making it difficult to reuse brushes outside their original software.
 
+## Intermediate JSON
+
+This project reads brush settings into an intermediate JSON file, and a PNG texture when applicable.
+
+JSON format:
+```json
+[
+    {
+        "name": "brush_1",
+        "type": "bitmap",
+        "width": 30,
+        "bitmapfile": "brush_1.png",
+        // other options ...
+    },
+    {
+        "name": "brush_2",
+        "type": "bitmap",
+        "width": 40,
+        "bitmapfile": "brush_2.png",
+        // other options ...
+    },
+    // other brushes ...
+]
+```
 
 ## Formats
 

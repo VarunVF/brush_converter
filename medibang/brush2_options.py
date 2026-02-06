@@ -1,8 +1,13 @@
 # Translate options to their human-readable form
 OPTIONS = {
+    "name": "name",
+    "type": "type",  # only "bitmap" is supported
+    "width": "width",  # in pixels
     "min": "minimumBrushSize",  # range 0.0 to 1.0
+    "opacity": "opacity",
     "psize": "pressureChangesSize",  # true or false
     "palpha": "pressureChangesOpacity",  # true or false
+    "bitmapfile": "bitmapfile",
     "option": "brushSpacing",  # range 2 to 100
     "option2": "doRotateAlong",  # 0 or 1
     "option3": "rotateAngle",  # range 0 to 100 (displayed in UI as -50 to 50)

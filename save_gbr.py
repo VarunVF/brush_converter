@@ -17,8 +17,8 @@ def check_args():
         raise ValueError("Invalid number of arguments.\n" + usage())
     if not os.path.isfile(sys.argv[1]):
         raise ValueError(f"Brush JSON file does not exist: {sys.argv[1]}")
-    if not os.path.isdir(sys.argv[3]):
-        raise ValueError(f"Bitmap directory does not exist: {sys.argv[3]}")
+    if not os.path.isdir(sys.argv[2]):
+        raise ValueError(f"Bitmap directory does not exist: {sys.argv[2]}")
     # OUTPUT_DIR will be created if it does not exist.
 
 

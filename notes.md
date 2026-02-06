@@ -57,3 +57,52 @@ The property list file can be loaded like this:
 >>> data.keys()
 dict_keys(['$version', '$objects', '$archiver', '$top'])
 ```
+
+This is an example structure of the plist data. UIDs are indices in the $objects array.
+```
+// $version
+100000
+
+// $objects
+[
+  // UID 0
+  '$null',
+  
+  // UID 1
+  {
+    'shapeOrientation': 1,
+    // ...
+    'bundledShapePath': UID(0),  // refers to the first object (null)
+    // ...
+    'bundledGrainPath': UID(2),  // refers to third object (string filename)
+    // ...
+    'name': UID(4),  // brush name
+    '$class': UID(5),  // perhaps code symbols?
+    'color': UID(3),  // likely RGBA format brush color
+    // ...
+  },
+
+  // UID 2
+  'grain.jpg',
+  
+  // UID 3
+  b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+  
+  // UID 4
+  'Bubbles',
+  
+  // UID 5
+  {
+      '$classname': 'SilicaBrush',
+      '$classes': ['SilicaBrush', 'NSObject']
+  }
+]
+
+// $archiver
+NSKeyedArchiver
+
+// $root
+{
+  'root': UID(1)
+}
+```
