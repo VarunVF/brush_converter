@@ -10,21 +10,28 @@ Many popular brush formats are proprietary and undocumented, making it difficult
 
 This project reads brush settings into an intermediate JSON file, and a PNG texture when applicable.
 
-JSON format:
+JSON format (example):
 ```json
 [
     {
-        "name": "brush_1",
+        "name": "Brush 1",
         "type": "bitmap",
-        "width": 30,
-        "bitmapfile": "brush_1.png",
-        // other options ...
+        "width": 32,
+        "minimumBrushSize": 0.0,
+        "opacity": 1,
+        "pressureChangesSize": true,
+        "pressureChangesOpacity": false,
+        "bitmapfile": "GIMP Brush.png",
+        "brushSpacing": 1.6,
+        "doRotateAlong": 1,
+        "rotateAngle": 50,
+        "randomRotateAngle": 0,
+        "applyForegroundColor": 1,
+        "colorJitter": 0,
+        "hueJitter": 0
     },
     {
-        "name": "brush_2",
-        "type": "bitmap",
-        "width": 40,
-        "bitmapfile": "brush_2.png",
+        "name": "Brush 2",
         // other options ...
     },
     // other brushes ...
