@@ -39,8 +39,8 @@ def read_procreate_brush(zip_file_path: str, extract_dir: str) -> list[dict]:
     with open(brush_archive_path, "rb") as f:
         plist_data: dict = plistlib.load(f)
 
-    for key, value in plist_data.items():
-        print(f"{key}: {value}")
+    # for key, value in plist_data.items():
+    #     print(f"{key}: {value}")
     
     os.remove(brush_archive_path)
     new_shape_filename = f"{plist_data['$objects'][4]}.png"

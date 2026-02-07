@@ -45,6 +45,7 @@ Conversion between formats may result in loss of detail. Brush settings may not 
 Applications currently supported:
 - GIMP
 - Medibang Paint
+- Procreate
 
 This project hopes to eventually support converting between these applications:
 - Clip Studio Paint
@@ -52,4 +53,3 @@ This project hopes to eventually support converting between these applications:
 - IbisPaint
 - Medibang Paint
 - Photoshop
-- Procreate

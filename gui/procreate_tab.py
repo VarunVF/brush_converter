@@ -1,0 +1,91 @@
+import customtkinter as ctk
+from tkinter import filedialog
+
+from load_procreate import load_procreate
+from save_procreate import save_procreate
+
+
+class ProcreateTabLoadFrame(ctk.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+
+        # Procreate load-specific arguments
+        self.btn_select = ctk.CTkButton(self, text="Select .brush File", command=self.select_file)
+        self.btn_select.grid(row=0, column=0, padx=10, pady=10)
+
+        self.zip_file_path = "No file selected"
+        self.brush_label = ctk.CTkLabel(self, text=f"Selected File: {self.zip_file_path}")
+        self.brush_label.grid(row=0, column=1, padx=10, pady=10)
+        
+        self.btn_select = ctk.CTkButton(self, text="Select Extract Folder", command=self.select_extract_dir)
+        self.btn_select.grid(row=1, column=0, padx=10, pady=10)
+
+        self.extract_dir = "No folder selected"
+        self.extract_label = ctk.CTkLabel(self, text=f"Extract Folder: {self.extract_dir}")
+        self.extract_label.grid(row=1, column=1, padx=10, pady=10)
+
+        # Convert Button
+        self.btn_convert = ctk.CTkButton(self, text="Convert & Save", fg_color="green", command=self.convert_brush)
+        self.btn_convert.grid(row=2, column=0, pady=20)
+
+        # Error/Status Label
+        self.status_label = ctk.CTkLabel(self, text="")
+        self.status_label.grid(row=2, column=1, padx=10, pady=10)
+
+    def select_file(self):
+        file_path = filedialog.askopenfilename(
+            title="Select Brush File",
+            filetypes=[("Procreate Brush", "*.brush"), ("All Files", "*.*")]
+        )
+        if file_path:
+            self.zip_file_path = file_path
+            self.brush_label.configure(text=f"Selected file: {self.zip_file_path}")
+
+    def select_extract_dir(self):
+        dir_path = filedialog.askdirectory(title="Select Extract Folder")
+        if dir_path:
+            self.extract_dir = dir_path
+            self.extract_label.configure(text=f"Selected folder: {self.extract_dir}")
+
+    def convert_brush(self):
+        print(f"Source file: {self.zip_file_path}")
+        print(f"Extract directory: {self.extract_dir}")
+        try:
+            load_procreate(self.zip_file_path, self.extract_dir)
+            self.status_label.configure(text="Conversion completed successfully!", text_color="green")
+        except Exception as e:
+            self.status_label.configure(text=f"Error: {str(e)}", text_color="red")
+
+
+class ProcreateTabSaveFrame(ctk.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        # Placeholder for Save Frame
+        self.info_label = ctk.CTkLabel(self, text="Procreate Save Functionality Coming Soon!")
+        self.info_label.pack(padx=10, pady=10)
+
+
+class ProcreateTab(ctk.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        
+        # Mode switcher
+        self.mode_switch = ctk.CTkSegmentedButton(
+            self, values=["Load", "Save"], command=self.switch_mode
+        )
+        self.mode_switch.set("Load")
+        self.mode_switch.grid(row=0, column=0, padx=10, pady=10)
+        
+        self.load_frame = ProcreateTabLoadFrame(self)
+        self.load_frame.grid(row=1, column=0, padx=10, pady=10)
+        self.save_frame = ProcreateTabSaveFrame(self)
+        self.save_frame.grid(row=1, column=0, padx=10, pady=10)
+        self.save_frame.grid_remove()
+    
+    def switch_mode(self, value):
+        if value == "Load":
+            self.load_frame.grid()
+            self.save_frame.grid_remove()
+        else:
+            self.save_frame.grid()
+            self.load_frame.grid_remove()

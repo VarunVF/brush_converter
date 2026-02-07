@@ -18,7 +18,15 @@ def check_args():
         raise ValueError(f"Zip file does not exist: {sys.argv[1]}")
     # OUTPUT_DIR will be created if it does not exist
 
+
+def load_procreate(zip_file_path: str, extract_dir: str):
+    os.makedirs(extract_dir, exist_ok=True)
     
+    json_path = os.path.join(extract_dir, "brush.json")
+    brush_info = read_procreate_brush(zip_file_path, extract_dir)
+    write_brush_json(brush_info, json_path)
+    
+
 def main():
     if len(sys.argv) == 1:
         print(usage())
@@ -27,12 +35,7 @@ def main():
     check_args()
     zip_file_path = sys.argv[1]
     extract_dir = sys.argv[2]
-
-    os.makedirs(extract_dir, exist_ok=True)
-    
-    json_path = os.path.join(extract_dir, "brush.json")
-    brush_info = read_procreate_brush(zip_file_path, extract_dir)
-    write_brush_json(brush_info, json_path)
+    load_procreate(zip_file_path, extract_dir)
 
 
 if __name__ == "__main__":

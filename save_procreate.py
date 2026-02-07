@@ -21,15 +21,21 @@ def check_args():
     # OUTPUT_DIR will be created if it does not exist
 
 
+def save_procreate(json_filepath: str, bitmap_dir: str, output_dir: str):
+    brush_info = read_brush_json(json_filepath)
+    write_procreate_brush(brush_info, bitmap_dir, output_dir)
+
+
 def main():
     if len(sys.argv) == 1:
         print(usage())
         return
     
     check_args()
-    
-    brush_info = read_brush_json(sys.argv[1])
-    write_procreate_brush(brush_info, sys.argv[2], sys.argv[3])
+    json_filepath = sys.argv[1]
+    bitmap_dir = sys.argv[2]
+    output_dir = sys.argv[3]
+    save_procreate(json_filepath, bitmap_dir, output_dir)
 
 
 if __name__ == "__main__":
