@@ -2,9 +2,9 @@
 
 A tool for converting digital brush formats between different painting applications.
 
-It translates brushes into a readable JSON format which can then be converted into various application-specific brush formats.
-
 Many popular brush formats are proprietary and undocumented, making it difficult to reuse brushes outside their original software.
+
+`brush_converter` aims to solve this problem. It translates brushes into a readable JSON format which can then be converted into various application-specific brush formats.
 
 ## Intermediate JSON
 
@@ -49,7 +49,19 @@ Applications currently supported:
 
 This project hopes to eventually support converting between these applications:
 - Clip Studio Paint
-- GIMP
 - IbisPaint
-- Medibang Paint
 - Photoshop
+
+## Building the GUI App
+
+`pyinstaller` is used to build the executable. After closing the repo, install the libraries and run the build command.
+
+Example using Windows:
+```sh
+git clone https://github.com/VarunVF/brush_converter/
+cd .\brush_converter\
+python -m venv venv
+venv\Scripts\activate.bat
+pip install -r requirements.txt
+pyinstaller .\brush_converter.spec
+```

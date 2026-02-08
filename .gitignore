@@ -1,3 +1,10 @@
+# Python
 __pycache__/
 venv/
+
+# pyinstaller
+build/
+dist/
+
+# Other
 out/
