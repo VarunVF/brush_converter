@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import filedialog
 
+from gui.mode_switcher import ModeSwitcher
 from load_procreate import load_procreate
 from save_procreate import save_procreate
 
@@ -126,24 +127,5 @@ class ProcreateTabSaveFrame(ctk.CTkFrame):
 class ProcreateTab(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
-        
-        # Mode switcher
-        self.mode_switch = ctk.CTkSegmentedButton(
-            self, values=["Load", "Save"], command=self.switch_mode
-        )
-        self.mode_switch.set("Load")
-        self.mode_switch.grid(row=0, column=0, padx=10, pady=10)
-        
-        self.load_frame = ProcreateTabLoadFrame(self)
-        self.load_frame.grid(row=1, column=0, padx=10, pady=10)
-        self.save_frame = ProcreateTabSaveFrame(self)
-        self.save_frame.grid(row=1, column=0, padx=10, pady=10)
-        self.save_frame.grid_remove()
-    
-    def switch_mode(self, value):
-        if value == "Load":
-            self.load_frame.grid()
-            self.save_frame.grid_remove()
-        else:
-            self.save_frame.grid()
-            self.load_frame.grid_remove()
+        self.mode_switcher = ModeSwitcher(self, ProcreateTabLoadFrame, ProcreateTabSaveFrame)
+        self.mode_switcher.pack(fill="both", expand=True)

@@ -1,6 +1,8 @@
 import customtkinter as ctk
 
 from gui.procreate_tab import ProcreateTab
+from gui.gimp_tab import GimpTab
+from gui.medibang_tab import MedibangTab
 
 
 class BrushApp(ctk.CTk):
@@ -22,10 +24,8 @@ class BrushApp(ctk.CTk):
         self.procreate_tab.pack(fill="both", expand=True)
 
         # Placeholder frames for other tabs
-        self.gimp_tab = ctk.CTkFrame(self.tabview.tab("GIMP"))
-        ctk.CTkLabel(self.gimp_tab, text="GIMP functionality coming soon!").pack(pady=20)
+        self.gimp_tab = GimpTab(self.tabview.tab("GIMP"))
         self.gimp_tab.pack(fill="both", expand=True)
 
-        self.medibang_tab = ctk.CTkFrame(self.tabview.tab("MediBang"))
-        ctk.CTkLabel(self.medibang_tab, text="MediBang functionality coming soon!").pack(pady=20)
+        self.medibang_tab = MedibangTab(self.tabview.tab("MediBang"))
         self.medibang_tab.pack(fill="both", expand=True)
