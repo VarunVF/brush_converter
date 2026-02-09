@@ -51,6 +51,8 @@ class GimpTabLoadFrame(ctk.CTkFrame):
         print(f"Source file: {self.gbr_file_path}")
         print(f"Extract directory: {self.extract_dir}")
         try:
+            if self.extract_dir == "No folder selected":
+                raise ValueError("No extract folder is selected")
             load_gbr(self.gbr_file_path, self.extract_dir)
             self.status_label.configure(text="Conversion completed successfully!", text_color="green")
         except Exception as e:
@@ -61,7 +63,6 @@ class GimpTabSaveFrame(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
-        # Procreate save-specific arguments
         self.json_filepath = "No JSON file selected"
         self.bitmap_dir = "No bitmap directory selected"
         self.output_dir = "No output directory selected"

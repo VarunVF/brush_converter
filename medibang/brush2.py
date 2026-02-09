@@ -64,11 +64,9 @@ def read_brush2(filepath: str) -> list[dict]:
 
 
 def write_brush2(brush_info: list[dict], brush_json_filepath: str, brush2_filepath: str, bitmap_dir: str):
-    # TODO update for new json structure
-
     for brush in brush_info:
         brush_spacing_key = REVERSE_OPTIONS["brushSpacing"]
-        brush[brush_spacing_key] = clamp_brush_spacing(float(brush[brush_spacing_key]))
+        brush[brush_spacing_key] = clamp_brush_spacing(brush[brush_spacing_key])
 
     # Parse the existing ini to find the next section index
     new_config = configparser.ConfigParser()

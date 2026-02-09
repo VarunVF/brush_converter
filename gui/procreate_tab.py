@@ -52,6 +52,8 @@ class ProcreateTabLoadFrame(ctk.CTkFrame):
         print(f"Source file: {self.zip_file_path}")
         print(f"Extract directory: {self.extract_dir}")
         try:
+            if self.extract_dir == "No folder selected":
+                raise ValueError("No extract folder is selected")
             load_procreate(self.zip_file_path, self.extract_dir)
             self.status_label.configure(text="Conversion completed successfully!", text_color="green")
         except Exception as e:
