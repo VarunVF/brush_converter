@@ -22,16 +22,22 @@ def check_args():
     # OUTPUT_DIR will be created if it does not exist.
 
 
+def save_gbr(json_filepath: str, bitmap_dir: str, output_dir: str):
+    # Translation not applicable for this format.
+    brush_info = read_brush_json(json_filepath)
+    write_gbr(brush_info, bitmap_dir, output_dir)
+
+
 def main():
     if len(sys.argv) == 1:
         print(usage())
         return
 
     check_args()
-
-    # Translation not applicable for this format.
-    brush_info = read_brush_json(sys.argv[1])
-    write_gbr(brush_info, sys.argv[2], sys.argv[3])
+    json_filepath = sys.argv[1]
+    bitmap_dir = sys.argv[2]
+    output_dir = sys.argv[3]
+    save_gbr(json_filepath, bitmap_dir, output_dir)
 
 
 if __name__ == "__main__":

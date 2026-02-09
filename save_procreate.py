@@ -4,6 +4,7 @@ import sys
 from procreate.brush import write_procreate_brush
 from brush_json import read_brush_json
 
+
 def usage():
     return ("Usage: python save_procreate.py BRUSH_JSON BITMAP_DIR OUTPUT_DIR\n"
             "    BRUSH_JSON: Path to the brush json file\n"
