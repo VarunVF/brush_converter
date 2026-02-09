@@ -65,3 +65,8 @@ venv\Scripts\activate.bat
 pip install -r requirements.txt
 pyinstaller .\brush_converter.spec
 ```
+
+Finally, run the GUI app using:
+```sh
+python -m gui.main
+```

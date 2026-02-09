@@ -19,11 +19,9 @@ class BrushApp(ctk.CTk):
         self.tabview.add("GIMP")
         self.tabview.add("MediBang")
 
-        # Populate each tab
         self.procreate_tab = ProcreateTab(self.tabview.tab("Procreate"))
         self.procreate_tab.pack(fill="both", expand=True)
 
-        # Placeholder frames for other tabs
         self.gimp_tab = GimpTab(self.tabview.tab("GIMP"))
         self.gimp_tab.pack(fill="both", expand=True)
 

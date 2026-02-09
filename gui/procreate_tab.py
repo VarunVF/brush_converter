@@ -2,8 +2,8 @@ import customtkinter as ctk
 from tkinter import filedialog
 
 from gui.mode_switcher import ModeSwitcher
-from load_procreate import load_procreate
-from save_procreate import save_procreate
+from procreate.load_procreate import load_procreate
+from procreate.save_procreate import save_procreate
 
 
 class ProcreateTabLoadFrame(ctk.CTkFrame):

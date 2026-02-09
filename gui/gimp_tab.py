@@ -2,8 +2,8 @@ import customtkinter as ctk
 from tkinter import filedialog
 
 from gui.mode_switcher import ModeSwitcher
-from load_gbr import load_gbr
-from save_gbr import save_gbr
+from gimp.load_gbr import load_gbr
+from gimp.save_gbr import save_gbr
 
 
 class GimpTabLoadFrame(ctk.CTkFrame):
