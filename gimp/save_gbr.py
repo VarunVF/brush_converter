@@ -12,12 +12,10 @@ def usage():
             "    OUTPUT_DIR: Path to the directory to write output gbr files\n")
 
 
-def check_args():
-    if len(sys.argv) != 4:
-        raise ValueError("Invalid number of arguments.\n" + usage())
-    if not os.path.isfile(sys.argv[1]):
+def check_args(json_filepath: str, bitmap_dir: str):
+    if not os.path.isfile(json_filepath):
         raise ValueError(f"Brush JSON file does not exist: {sys.argv[1]}")
-    if not os.path.isdir(sys.argv[2]):
+    if not os.path.isdir(bitmap_dir):
         raise ValueError(f"Bitmap directory does not exist: {sys.argv[2]}")
     # OUTPUT_DIR will be created if it does not exist.
 
@@ -32,11 +30,13 @@ def main():
     if len(sys.argv) == 1:
         print(usage())
         return
-
-    check_args()
+    elif len(sys.argv) != 4:
+        raise ValueError("Invalid number of arguments.\n" + usage())
+    
     json_filepath = sys.argv[1]
     bitmap_dir = sys.argv[2]
     output_dir = sys.argv[3]
+    check_args(json_filepath, bitmap_dir)
     save_gbr(json_filepath, bitmap_dir, output_dir)
 
 

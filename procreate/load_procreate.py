@@ -11,11 +11,9 @@ def usage():
             "    OUTPUT_DIR: Directory to extract the contents\n")
 
 
-def check_args():
-    if len(sys.argv) != 3:
-        raise ValueError("Invalid number of arguments.\n" + usage())
-    if not os.path.isfile(sys.argv[1]):
-        raise ValueError(f"Zip file does not exist: {sys.argv[1]}")
+def check_args(zip_file_path: str):
+    if not os.path.isfile(zip_file_path):
+        raise ValueError(f"Zip file does not exist: {zip_file_path}")
     # OUTPUT_DIR will be created if it does not exist
 
 
@@ -31,10 +29,12 @@ def main():
     if len(sys.argv) == 1:
         print(usage())
         return
+    elif len(sys.argv) != 3:
+        raise ValueError("Invalid number of arguments.\n" + usage())
     
-    check_args()
     zip_file_path = sys.argv[1]
     extract_dir = sys.argv[2]
+    check_args(zip_file_path)
     load_procreate(zip_file_path, extract_dir)
 
 

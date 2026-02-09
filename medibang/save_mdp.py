@@ -14,27 +14,33 @@ def usage():
             "    BITMAP_DIR: Path to the directory to write brush bitmaps\n")
 
 
-def check_args():
-    if len(sys.argv) != 4:
-        raise ValueError("Invalid number of arguments.\n" + usage())
-    if not os.path.isfile(sys.argv[1]):
-        raise ValueError(f"Brush JSON file does not exist: {sys.argv[1]}")
-    if not os.path.isfile(sys.argv[2]):
-        raise ValueError(f"Brush2.ini file does not exist: {sys.argv[2]}")
+def check_args(brush_json_file: str, brush2_ini_file: str):
+    if not os.path.isfile(brush_json_file):
+        raise ValueError(f"Brush JSON file does not exist: {brush_json_file}")
+    if not os.path.isfile(brush2_ini_file):
+        raise ValueError(f"Brush2.ini file does not exist: {brush2_ini_file}")
     # BITMAP_DIR will be created if it does not exist
+
+
+def save_mdp(brush_json_file: str, brush2_ini_file: str, bitmap_dir: str):
+    brush_info = read_brush_json(brush_json_file)
+    brush_info = add_options(MEDIBANG_SPECIFIC, brush_info)
+    brush_info = encode_options(OPTIONS, brush_info)
+    write_brush2(brush_info, brush_json_file, brush2_ini_file, bitmap_dir)
 
 
 def main():
     if len(sys.argv) == 1:
         print(usage())
         return
+    elif len(sys.argv) != 4:
+        raise ValueError("Invalid number of arguments.\n" + usage())    
     
-    check_args()
-    
-    brush_info = read_brush_json(sys.argv[1])
-    brush_info = add_options(MEDIBANG_SPECIFIC, brush_info)
-    brush_info = encode_options(OPTIONS, brush_info)
-    write_brush2(brush_info, sys.argv[1], sys.argv[2], sys.argv[3])
+    brush_json_file = sys.argv[1]
+    brush2_ini_file = sys.argv[2]
+    bitmap_dir = sys.argv[3]
+    check_args(brush_json_file, brush2_ini_file)
+    save_mdp(brush_json_file, brush2_ini_file, bitmap_dir)
 
 
 if __name__ == "__main__":

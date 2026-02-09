@@ -6,16 +6,14 @@ from brush_json import write_brush_json
 
 
 def usage():
-    return ("Usage: python load_gbr.py GBR_FILE OUTPUT_JSON"
-            "    GBR_FILE  : Path to the gbr file"
-            "    OUTPUT_DIR: Directory to write the output json and png files")
+    return ("Usage: python load_gbr.py GBR_FILE OUTPUT_JSON\n"
+            "    GBR_FILE  : Path to the gbr file\n"
+            "    OUTPUT_DIR: Directory to write the output json and png files\n")
 
 
-def check_args():
-    if len(sys.argv) != 3:
-        raise ValueError("Invalid number of arguments.\n" + usage())
-    if not os.path.isfile(sys.argv[1]):
-        raise ValueError(f"GBR file does not exist: {sys.argv[1]}")
+def check_args(gbr_file_path: str):
+    if not os.path.isfile(gbr_file_path):
+        raise ValueError(f"GBR file does not exist: {gbr_file_path}")
     # OUTPUT_DIR will be created if it does not exist
 
 
@@ -35,10 +33,12 @@ def main():
     if len(sys.argv) == 1:
         print(usage())
         return
+    elif len(sys.argv) != 3:
+        raise ValueError("Invalid number of arguments.\n" + usage())
     
-    check_args()
     gbr_file_path = sys.argv[1]
     output_dir = sys.argv[2]
+    check_args(gbr_file_path)
     load_gbr(gbr_file_path, output_dir)
 
 

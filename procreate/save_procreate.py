@@ -12,13 +12,11 @@ def usage():
             "    OUTPUT_DIR: Path to the output directory for procreate brushes\n")
 
 
-def check_args():
-    if len(sys.argv) != 4:
-        raise ValueError("Invalid number of arguments.\n" + usage())
-    if not os.path.isfile(sys.argv[1]):
-        raise ValueError(f"Brush JSON file does not exist: {sys.argv[1]}")
-    if not os.path.isdir(sys.argv[2]):
-        raise ValueError(f"Bitmap directory does not exist: {sys.argv[2]}")
+def check_args(json_filepath: str, bitmap_dir: str):
+    if not os.path.isfile(json_filepath):
+        raise ValueError(f"Brush JSON file does not exist: {json_filepath}")
+    if not os.path.isdir(bitmap_dir):
+        raise ValueError(f"Bitmap directory does not exist: {bitmap_dir}")
     # OUTPUT_DIR will be created if it does not exist
 
 
@@ -31,11 +29,13 @@ def main():
     if len(sys.argv) == 1:
         print(usage())
         return
+    elif len(sys.argv) != 4:
+        raise ValueError("Invalid number of arguments.\n" + usage())
     
-    check_args()
     json_filepath = sys.argv[1]
     bitmap_dir = sys.argv[2]
     output_dir = sys.argv[3]
+    check_args(json_filepath, bitmap_dir)
     save_procreate(json_filepath, bitmap_dir, output_dir)
 
 
