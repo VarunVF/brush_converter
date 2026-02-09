@@ -70,3 +70,10 @@ Finally, run the GUI app using:
 ```sh
 python -m gui.main
 ```
+
+### Spec File
+
+The spec file is generated using the options of this command:
+```sh
+pyinstaller --noconsole --onefile --collect-all customtkinter --paths=. gui/main.py --name brush_converter
+```
