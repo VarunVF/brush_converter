@@ -3,6 +3,7 @@ import customtkinter as ctk
 from gui.procreate_tab import ProcreateTab
 from gui.gimp_tab import GimpTab
 from gui.medibang_tab import MedibangTab
+from gui.csp_tab import CspTab
 
 
 class BrushApp(ctk.CTk):
@@ -18,6 +19,7 @@ class BrushApp(ctk.CTk):
         self.tabview.add("Procreate")
         self.tabview.add("GIMP")
         self.tabview.add("MediBang")
+        self.tabview.add("CSP")
 
         self.procreate_tab = ProcreateTab(self.tabview.tab("Procreate"))
         self.procreate_tab.pack(fill="both", expand=True)
@@ -27,3 +29,6 @@ class BrushApp(ctk.CTk):
 
         self.medibang_tab = MedibangTab(self.tabview.tab("MediBang"))
         self.medibang_tab.pack(fill="both", expand=True)
+
+        self.cps_tab = CspTab(self.tabview.tab("CSP"))
+        self.cps_tab.pack(fill="both", expand=True)
