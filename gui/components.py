@@ -30,10 +30,10 @@ class ModeSwitcher(ctk.CTkTabview):
 
 
 class SelectDirectory(ctk.CTkFrame):
-    def __init__(self, master, label_name: str, **kwargs):
+    def __init__(self, master, label_name: str, default_dir: str = "", **kwargs):
         super().__init__(master, **kwargs)
 
-        self.selected_dir = ""
+        self.selected_dir = default_dir
         self.label_name = label_name
 
         self.button = ctk.CTkButton(self, text=f"Select {self.label_name} Folder", command=self.select_dir)
