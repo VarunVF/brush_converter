@@ -52,6 +52,13 @@ This project hopes to eventually support converting between these applications:
 - IbisPaint
 - Photoshop
 
+## Running the GUI App
+
+You can use a prebuilt binary from releases, or run the Python code directly:
+```sh
+python -m gui.main
+```
+
 ## Building the GUI App
 
 `pyinstaller` is used to build the executable. After closing the repo, install the libraries and run the build command.
@@ -64,11 +71,6 @@ python -m venv venv
 venv\Scripts\activate.bat
 pip install -r requirements.txt
 pyinstaller .\brush_converter.spec
-```
-
-Finally, run the GUI app using:
-```sh
-python -m gui.main
 ```
 
 ### Spec File
