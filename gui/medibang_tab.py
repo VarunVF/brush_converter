@@ -16,14 +16,20 @@ class MedibangTabLoadFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.select_config_dir = SelectDirectory(self, "Config", get_config_dir(), fg_color="transparent")
-        self.select_config_dir.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        self.label = ctk.CTkLabel(self, text="Medibang config folder (automatically selected for you):")
+        self.label.grid(row=0, column=0, padx=10, pady=0, sticky="w")
 
-        self.select_extract_dir = SelectDirectory(self, "Extract", fg_color="transparent")
-        self.select_extract_dir.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        self.select_config_dir = SelectDirectory(self, "Config", get_config_dir(), fg_color="transparent")
+        self.select_config_dir.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+        self.label = ctk.CTkLabel(self, text="Select which folder to write the output to:")
+        self.label.grid(row=2, column=0, padx=10, pady=0, sticky="w")
+
+        self.select_extract_dir = SelectDirectory(self, "Output", fg_color="transparent")
+        self.select_extract_dir.grid(row=3, column=0, padx=10, pady=10, sticky="w")
 
         self.convert = ConvertWidget(self, "Load as JSON", self.convert_brush, fg_color="transparent")
-        self.convert.grid(row=2, column=0, padx=10, pady=20, sticky="w")
+        self.convert.grid(row=4, column=0, padx=10, pady=20, sticky="w")
 
     def convert_brush(self):
         config_dir = self.select_config_dir.get_dir()
@@ -44,14 +50,20 @@ class MedibangTabSaveFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
+        self.label = ctk.CTkLabel(self, text="Select the .json file (from your output directory):")
+        self.label.grid(row=0, column=0, padx=10, pady=0, sticky="w")
+
         self.select_json_file = SelectFile(self, "json", fg_color="transparent")
-        self.select_json_file.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        self.select_json_file.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+        self.label = ctk.CTkLabel(self, text="Medibang config folder (automatically selected for you):")
+        self.label.grid(row=2, column=0, padx=10, pady=0, sticky="w")
 
         self.select_config_dir = SelectDirectory(self, "Config", get_config_dir(), fg_color="transparent")
-        self.select_config_dir.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        self.select_config_dir.grid(row=3, column=0, padx=10, pady=10, sticky="w")
 
         self.convert = ConvertWidget(self, "Convert & Save", self.convert_brush, fg_color="transparent")
-        self.convert.grid(row=2, column=0, padx=10, pady=20, sticky="w")
+        self.convert.grid(row=4, column=0, padx=10, pady=20, sticky="w")
 
     def convert_brush(self):
         brush_json_file_path = self.select_json_file.get_file()

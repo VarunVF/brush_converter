@@ -8,14 +8,20 @@ class CspTabLoadFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
+        self.label = ctk.CTkLabel(self, text="Select a CSP .sut brush file to be converted:")
+        self.label.grid(row=0, column=0, padx=10, pady=0, sticky="w")
+
         self.select_sut_file = SelectFile(self, "sut", fg_color="transparent")
-        self.select_sut_file.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        self.select_sut_file.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+        self.label = ctk.CTkLabel(self, text="Select which folder to write the output to:")
+        self.label.grid(row=2, column=0, padx=10, pady=0, sticky="w")
 
         self.select_output_dir = SelectDirectory(self, "Output", fg_color="transparent")
-        self.select_output_dir.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        self.select_output_dir.grid(row=3, column=0, padx=10, pady=10, sticky="w")
 
         self.convert = ConvertWidget(self, "Load as JSON", self.convert_brush, fg_color="transparent")
-        self.convert.grid(row=2, column=0, padx=10, pady=20, sticky="w")
+        self.convert.grid(row=4, column=0, padx=10, pady=20, sticky="w")
     
     def convert_brush(self):
         sut_file_path = self.select_sut_file.get_file()
