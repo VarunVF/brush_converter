@@ -6,6 +6,21 @@ Many popular brush formats are proprietary and undocumented, making it difficult
 
 `brush_converter` aims to solve this problem. It translates brushes into a readable JSON format which can then be converted into various application-specific brush formats.
 
+## Using the GUI App
+
+You can generally convert from any brush to any other brush, as long as the load/save is supported.
+
+For example, to convert brushes from Procreate to Medibang:
+1. Go to Procreate > Load:
+    - Select the files / folders for each (blue) input button.
+    - Click "Load As JSON". This will create a .json file and .png files in your chosen output folder.
+2. Go to Medibang > Save:
+    - Select the files / folders for each (blue) input button (Medibang config folder will be selected for you).
+    - Click "Convert & Save". This will generate / convert the final converted brush.
+
+You can then import generated brush files into your drawing app.
+In the case of Medibang, the files are read/written directly from the config folder.
+
 ## Intermediate JSON
 
 This project reads brush settings into an intermediate JSON file, and a PNG texture when applicable.
