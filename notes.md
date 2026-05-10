@@ -43,7 +43,25 @@ The return value, 0 or 1, may signify whether the brush was able to successfully
 
 ## Photoshop
 
-Adobe brushes use a proprietary .abr format. This format is complex.
+Adobe Photoshop's `.abr` brushes use a proprietary format. Photoshop `.abr` files (specifically version 10/CS6+) function as a binary container for brush "samples". Unlike other some formats, it is a continuous binary stream that requires precise pointer management to navigate.
+
+### Structure and Navigation
+
+The file is organized into `8BIM` resource blocks. To find the pixel data, you must scan for the `8BIMsamp` marker, which acts as the container for all sampled brushes in the set.
+
+Each brush entry within the `samp` block contains a metadata header. Depending on the minor version, this header has a fixed length (e.g., 47 bytes or 301 bytes). If the minor version is unknown, the metadata has variable size, and the data must be found by scanning for a valid "dimension block" (x/y min and max values).
+
+Photoshop requires 4-byte alignment between brush entries. After reading a brush, the file pointer must be moved to the next multiple of 4 to stay in sync with the file structure.
+
+### Pixel Decompression
+
+Photoshop uses a row-based **PackBits RLE (Run-Length Encoding)**. If the data is simply decoded as one giant block, the images will have a "wraparound" or "shifted" glitch.
+
+Immediately following the compression byte, there is a table of `uint16_t` values (one for every row of the brush height). Each row must be decoded individually based on the byte length provided in the table.
+
+### Image Requirements
+
+Like Medibang, 8-bit grayscale brushes need to be inverted for standard bitmap use. 8-bit brushes are standard grayscale, while 32-bit brushes contain interleaved RGB+Alpha data. When extracting 32-bit brushes, the Alpha channel must be de-interleaved (every 4th byte) to create a transparent PNG.
 
 ## Procreate
 

@@ -61,22 +61,23 @@ Applications currently supported:
 - GIMP
 - Medibang Paint
 - Procreate
+- Clip Studio Paint (loading only)
 
 This project hopes to eventually support converting between these applications:
-- Clip Studio Paint
 - IbisPaint
 - Photoshop
 
-## Running the GUI App
+## Installation
 
-You can use a prebuilt binary from releases, or run the Python code directly:
-```sh
-python -m gui.main
-```
+### Prebuilt executable
 
-## Building the GUI App
+The simplest way is to download and run the prebuilt executable from [releases](https://github.com/VarunVF/brush_converter/releases/latest).
 
-`pyinstaller` is used to build the executable. After closing the repo, install the libraries and run the build command.
+Alternatively, to build from source, follow the installation instructions below.
+
+### Building
+
+After cloning the repo, install the dependencies.
 
 Example using Windows:
 ```sh
@@ -85,12 +86,40 @@ cd .\brush_converter\
 python -m venv venv
 venv\Scripts\activate.bat
 pip install -r requirements.txt
-pyinstaller .\brush_converter.spec
 ```
 
-### Spec File
+## Running
+
+After installing the dependencies, you can run in any of the following ways.
+
+### Running the GUI App (executable)
+
+`pyinstaller` is used to build the GUI app executable. Build and run:
+```sh
+pyinstaller .\brush_converter.spec
+.\dist\brush_converter.exe
+```
+
+#### Spec File
 
 The spec file is generated using the options of this command:
 ```sh
 pyinstaller --noconsole --onefile --collect-all customtkinter --paths=. gui/main.py --name brush_converter
 ```
+
+### Running the GUI App (Python)
+
+Run the Python code directly:
+```sh
+python -m gui.main
+```
+
+### Running the CLI
+
+You can also run the command-line interface for each module directly if you prefer. For example, to use the Photoshop loading module, make sure the dependencies are installed, then run:
+
+```sh
+python -m photoshop.load_photoshop <ABR_FILE> <OUTPUT_DIR>
+```
+
+Remember to replace `<ABR_FILE>` and `<OUTPUT_DIR>` with your actual file and desired output folder.
