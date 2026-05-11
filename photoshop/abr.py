@@ -4,7 +4,7 @@ from io import BufferedReader
 from PIL import Image, ImageOps
 
 
-def pack_int(f: BufferedReader, byte_length: int):
+def pack_uint(f: BufferedReader, byte_length: int):
     pattern = f.read(byte_length)
     if len(pattern) != byte_length:
         return None  # Reached EOF
@@ -12,16 +12,28 @@ def pack_int(f: BufferedReader, byte_length: int):
     return int.from_bytes(pattern, "big", signed=False)
 
 
-def read_uint8(f: BufferedReader):
+def pack_int(f: BufferedReader, byte_length: int):
+    pattern = f.read(byte_length)
+    if len(pattern) != byte_length:
+        return None  # Reached EOF
+
+    return int.from_bytes(pattern, "big", signed=True)
+
+
+def read_int8(f: BufferedReader):
     return pack_int(f, 1)
 
 
+def read_uint8(f: BufferedReader):
+    return pack_uint(f, 1)
+
+
 def read_uint16(f: BufferedReader):
-    return pack_int(f, 2)
+    return pack_uint(f, 2)
 
 
 def read_uint32(f: BufferedReader):
-    return pack_int(f, 4)
+    return pack_uint(f, 4)
 
 
 def align(position: int, boundary: int = 4):
@@ -102,7 +114,10 @@ class BinaryParser:
                     print(f"Unknown bit depth {depth} for bitmap")
                 
                 filename = settings["bitmapfile"]
-                img.save(os.path.join(self.output_dir, filename))
+                img.save(
+                    os.path.join(self.output_dir, filename),
+                    compress_level=1  # Faster compression
+                )
                 
             except Exception as e:
                 print(f"Failed to save bitmap {i}: {e}")
@@ -144,7 +159,8 @@ class BinaryParser:
             "pixels": pixels
         }
 
-    def _find_brush_offset(self, f: BufferedReader, start_pos: int, brush_size: int):
+    @staticmethod
+    def _find_brush_offset(f: BufferedReader, start_pos: int, brush_size: int):
         """Internal helper for the 'guessing' logic for unknown minor versions."""
 
         start = 0
@@ -167,25 +183,30 @@ class BinaryParser:
         """Seek `f` to the nearest 8BIM section of the 'samp' type."""
 
         while True:
-            marker = f.read(4)
-            kind = f.read(4)
+            marker = f.read(4) 
+            if len(marker) != 4:
+                return False  # Reached EOF without finding 'samp'
+            if marker != b"8BIM":
+                return False  # Corrupted file / unexpected padding
             
-            if len(marker) != 4 or len(kind) != 4:
+            kind = f.read(4)
+            if len(kind) < 4:
                 return False  # Reached EOF
-
-            if marker != b"8BIM" or len(kind) != 4:
-                return False  # Wrong section
             
             if kind == b"samp":
-                return True
+                return True  # Found the target
             else:
-                # Check the next section
+                # Skip to the end of this unwanted section
                 section_length = read_uint32(f)
+                if section_length is None:
+                    return False  # Reached EOF
+                
                 f.seek(section_length, os.SEEK_CUR)
 
     def _make_brush_settings(self, brush_index: int, brush_data: dict) -> dict:
         filename = os.path.basename(self.abr_file)
-        brush_name = f"{filename}_{brush_index}"
+        filename_no_ext = os.path.splitext(filename)[0]
+        brush_name = f"{filename_no_ext}_{brush_index}"
 
         return {
             # We cannot get brush settings from the file.
@@ -211,47 +232,42 @@ class BinaryParser:
             "depth": brush_data["depth"],
         }
 
-    def _decode_pixels(self, f: BufferedReader, width: int, height: int) -> bytes:
+    @staticmethod
+    def _decode_pixels(f: BufferedReader, width: int, height: int) -> bytes:
         # Read the Scanline Table (2 bytes per row)
         # This table tells us the compressed length of every single row.
-        scanline_lengths = []
-        for _ in range(height):
-            data = f.read(2)
-            scanline_lengths.append(int.from_bytes(data, "big"))
-
+        scanline_lengths = [int.from_bytes(f.read(2), "big") for _ in range(height)]
+        
         decoded = bytearray(width * height)
         curr_pos = 0
 
-        # 2. Decode row by row
         for row_length in scanline_lengths:
-            bytes_read_in_row = 0
+            # Read an entire row of data
+            row_data = f.read(row_length)
+            row_ptr = 0
             
-            # We only read exactly 'row_length' bytes for this specific row
-            while bytes_read_in_row < row_length:
-                header = f.read(1)
-                bytes_read_in_row += 1
-                if not header: break
+            while row_ptr < row_length:
+                # Access buffer directly
+                n_byte = row_data[row_ptr]
+                row_ptr += 1
                 
-                n = int.from_bytes(header, "big", signed=True)
+                # Convert unsigned byte to signed int (-128 to 127)
+                n = n_byte if n_byte <= 127 else n_byte - 256
 
                 if 0 <= n <= 127:
                     # Copy next n+1 bytes literally
                     count = n + 1
-                    data = f.read(count)
-                    decoded[curr_pos : curr_pos + count] = data
+                    decoded[curr_pos : curr_pos + count] = row_data[row_ptr : row_ptr + count]
                     curr_pos += count
-                    bytes_read_in_row += count
+                    row_ptr += count
                 elif n != -128:
                     # Repeat next byte -n+1 times
                     count = -n + 1
-                    byte = f.read(1)
-                    bytes_read_in_row += 1
+                    byte_val = row_data[row_ptr : row_ptr + 1]
+                    decoded[curr_pos : curr_pos + count] = byte_val * count
+                    curr_pos += count
+                    row_ptr += 1
                     
-                    # Manual fill to avoid memory fragmentation
-                    for _ in range(count):
-                        decoded[curr_pos] = byte[0]
-                        curr_pos += 1
-                        
         return bytes(decoded)
 
 def read_abr(abr_file: str, output_dir: str) -> list[dict]:
