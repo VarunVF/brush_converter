@@ -4,6 +4,7 @@ from gui.procreate_tab import ProcreateTab
 from gui.gimp_tab import GimpTab
 from gui.medibang_tab import MedibangTab
 from gui.csp_tab import CspTab
+from gui.photoshop_tab import PhotoshopTab
 
 
 class BrushApp(ctk.CTk):
@@ -20,6 +21,7 @@ class BrushApp(ctk.CTk):
         self.tabview.add("GIMP")
         self.tabview.add("MediBang")
         self.tabview.add("CSP")
+        self.tabview.add("Photoshop")
 
         self.procreate_tab = ProcreateTab(self.tabview.tab("Procreate"))
         self.procreate_tab.pack(fill="both", expand=True)
@@ -30,5 +32,8 @@ class BrushApp(ctk.CTk):
         self.medibang_tab = MedibangTab(self.tabview.tab("MediBang"))
         self.medibang_tab.pack(fill="both", expand=True)
 
-        self.cps_tab = CspTab(self.tabview.tab("CSP"))
-        self.cps_tab.pack(fill="both", expand=True)
+        self.csp_tab = CspTab(self.tabview.tab("CSP"))
+        self.csp_tab.pack(fill="both", expand=True)
+
+        self.photoshop_tab = PhotoshopTab(self.tabview.tab("Photoshop"))
+        self.photoshop_tab.pack(fill="both", expand=True)

@@ -1,5 +1,3 @@
-from tkinter import filedialog
-
 import customtkinter as ctk
 
 from gui.components import ConvertWidget, ModeSwitcher, SelectDirectory, SelectFile
