@@ -1,10 +1,11 @@
 import customtkinter as ctk
 
+from gui.base_brush_tab import BaseBrushTab
 from gui.components import ConvertWidget, ModeSwitcher, SelectDirectory, SelectFile
 from csp.load_csp import load_csp
 
 
-class CspTabLoadFrame(ctk.CTkFrame):
+class CspTabLoadFrame(BaseBrushTab):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -24,20 +25,15 @@ class CspTabLoadFrame(ctk.CTkFrame):
         self.convert.grid(row=4, column=0, padx=10, pady=20, sticky="w")
     
     def convert_brush(self):
-        sut_file_path = self.select_sut_file.get_file()
-        output_dir = self.select_output_dir.get_dir()
-        try:
-            if not sut_file_path:
-                raise ValueError("No .sut file is selected")
-            if not output_dir:
-                raise ValueError("No output folder is selected")
-            load_csp(sut_file_path, output_dir)
-            self.convert.configure_label("Conversion completed successfully!", "green")
-        except Exception as e:
-            self.convert.configure_label(f"Error: {str(e)}", "red")
+        rules = [
+            (self.select_sut_file.get_file(), "No .sut file is selected"),
+            (self.select_output_dir.get_dir(), "No output folder is selected"),
+        ]
+
+        self.run_threaded_conversion(load_csp, rules)
 
 
-class CspTabSaveFrame(ctk.CTkFrame):
+class CspTabSaveFrame(BaseBrushTab):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 

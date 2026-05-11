@@ -3,6 +3,7 @@ import os
 import customtkinter as ctk
 from platformdirs import user_data_dir
 
+from gui.base_brush_tab import BaseBrushTab
 from gui.components import ConvertWidget, ModeSwitcher, SelectDirectory, SelectFile
 from medibang.load_mdp import load_mdp
 from medibang.save_mdp import save_mdp
@@ -12,7 +13,7 @@ def get_config_dir():
     return user_data_dir(appname="CloudAlpaca", appauthor="Medibang")
 
 
-class MedibangTabLoadFrame(ctk.CTkFrame):
+class MedibangTabLoadFrame(BaseBrushTab):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -33,20 +34,16 @@ class MedibangTabLoadFrame(ctk.CTkFrame):
 
     def convert_brush(self):
         config_dir = self.select_config_dir.get_dir()
-        brush2ini_file_path = os.path.join(config_dir, "Brush2.ini")
-        extract_dir = self.select_extract_dir.get_dir()
-        try:
-            if not brush2ini_file_path:
-                raise ValueError("No .ini file is selected")
-            if not extract_dir:
-                raise ValueError("No extract folder is selected")
-            load_mdp(config_dir, brush2ini_file_path, extract_dir)
-            self.convert.configure_label("Conversion completed successfully!", "green")
-        except Exception as e:
-            self.convert.configure_label(f"Error: {str(e)}", "red")
+        rules = [
+            (config_dir, "No config folder is selected"),
+            (os.path.join(config_dir, "Brush2.ini"), "Could not get path to Brush2.ini config file"),
+            (self.select_extract_dir.get_dir(), "No extract folder is selected"),
+        ]
+
+        self.run_threaded_conversion(load_mdp, rules)
 
 
-class MedibangTabSaveFrame(ctk.CTkFrame):
+class MedibangTabSaveFrame(BaseBrushTab):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -66,19 +63,14 @@ class MedibangTabSaveFrame(ctk.CTkFrame):
         self.convert.grid(row=4, column=0, padx=10, pady=20, sticky="w")
 
     def convert_brush(self):
-        brush_json_file_path = self.select_json_file.get_file()
         config_dir = self.select_config_dir.get_dir()
-        brush2ini_file_path = os.path.join(config_dir, "Brush2.ini")
-        bitmap_dir = os.path.join(config_dir, "brush_bitmap")
-        try:
-            if not brush_json_file_path:
-                raise ValueError("No .json file is selected")
-            if not config_dir:
-                raise ValueError("No .ini file is selected")
-            save_mdp(brush_json_file_path, brush2ini_file_path, bitmap_dir)
-            self.convert.configure_label("Conversion completed successfully!", "green")
-        except Exception as e:
-            self.convert.configure_label(f"Error: {str(e)}", "red")
+        rules = [
+            (self.select_json_file.get_file(), "No .json file is selected"),
+            (os.path.join(config_dir, "Brush2.ini"), "Could not get path to Brush2.ini config file"),
+            (os.path.join(config_dir, "brush_bitmap"), "Could not get path to bitmaps in config folder"),
+        ]
+
+        self.run_threaded_conversion(save_mdp, rules)
 
 
 class MedibangTab(ctk.CTkFrame):

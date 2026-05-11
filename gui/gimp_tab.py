@@ -1,11 +1,12 @@
 import customtkinter as ctk
 
+from gui.base_brush_tab import BaseBrushTab
 from gui.components import ConvertWidget, ModeSwitcher, SelectDirectory, SelectFile
 from gimp.load_gbr import load_gbr
 from gimp.save_gbr import save_gbr
 
 
-class GimpTabLoadFrame(ctk.CTkFrame):
+class GimpTabLoadFrame(BaseBrushTab):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -25,20 +26,14 @@ class GimpTabLoadFrame(ctk.CTkFrame):
         self.convert.grid(row=4, column=0, padx=10, pady=20, sticky="w")
     
     def convert_brush(self):
-        gbr_file_path = self.select_gbr_file.get_file()
-        extract_dir = self.select_extract_dir.get_dir()
-        try:
-            if not gbr_file_path:
-                raise ValueError("No .gbr file is selected")
-            if not extract_dir:
-                raise ValueError("No extract folder is selected")
-            load_gbr(gbr_file_path, extract_dir)
-            self.convert.configure_label("Conversion completed successfully!", "green")
-        except Exception as e:
-            self.convert.configure_label(f"Error: {str(e)}", "red")
+        rules = [
+            (self.select_gbr_file.get_file(), "No .gbr file is selected"),
+            (self.select_extract_dir.get_dir(), "No extract folder is selected"),
+        ]
+        self.run_threaded_conversion(load_gbr, rules)
 
 
-class GimpTabSaveFrame(ctk.CTkFrame):
+class GimpTabSaveFrame(BaseBrushTab):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -64,20 +59,13 @@ class GimpTabSaveFrame(ctk.CTkFrame):
         self.convert.grid(row=6, column=0, padx=10, pady=20, sticky="w")
 
     def convert_brush(self):
-        json_file_path = self.select_json_file.get_file()
-        bitmap_dir = self.select_bitmap_dir.get_dir()
-        output_dir = self.select_output_dir.get_dir()
-        try:
-            if not json_file_path:
-                raise ValueError("No .json file is selected")
-            if not bitmap_dir:
-                raise ValueError("No bitmap folder is selected")
-            if not output_dir:
-                raise ValueError("No output folder is selected")
-            save_gbr(json_file_path, bitmap_dir, output_dir)
-            self.convert.configure_label("Conversion completed successfully!", "green")
-        except Exception as e:
-            self.convert.configure_label(f"Error: {str(e)}", "red")
+        rules = [
+            (self.select_json_file.get_file(), "No .json file is selected"),
+            (self.select_bitmap_dir.get_dir(), "No bitmap folder is selected"),
+            (self.select_output_dir.get_dir(), "No output folder is selected"),
+        ]
+
+        self.run_threaded_conversion(save_gbr, rules)
 
 
 class GimpTab(ctk.CTkFrame):

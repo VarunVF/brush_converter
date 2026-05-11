@@ -21,6 +21,29 @@ For example, to convert brushes from Procreate to Medibang:
 You can then import generated brush files into your drawing app.
 In the case of Medibang, the files are read/written directly from the config folder.
 
+## Formats
+
+Conversion between formats may result in loss of detail. Brush settings may not be readable or may be incompatible with other software.
+
+### Current status of application support:
+
+| Application       | Loading | Saving |
+|-------------------|---------|--------|
+| GIMP              | ✅ | ✅ |
+| Medibang Paint    | ✅ | ✅ |
+| Procreate         | ✅ | ✅ |
+| Clip Studio Paint | ✅ | ❌ |
+| Photoshop         | ✅ | ❌ |
+| IbisPaint         | ❌ | ❌ |
+
+### About features marked with '❌'
+This project hopes to expand support for these features. However, due to the proprietary and closed nature of these file formats, full implementation is not guaranteed and may ultimately prove technically unfeasible.
+
+Current progress and roadblocks:
+- **Clip Studio Paint (Saving)**: Requires rebuilding the internal sqlite database structure while maintaining compatibility with the CSP engine.
+- **Photoshop (Saving)**: Requires further research into the undocumented segments of the `.abr` format.
+- **IbisPaint**: Exploring methods to decode and interpret the QR code data.
+
 ## Intermediate JSON
 
 This project reads brush settings into an intermediate JSON file, and a PNG texture when applicable.
@@ -52,20 +75,6 @@ JSON format (example):
     // other brushes ...
 ]
 ```
-
-## Formats
-
-Conversion between formats may result in loss of detail. Brush settings may not be readable or may be incompatible with other software.
-
-Applications currently supported:
-- GIMP
-- Medibang Paint
-- Procreate
-- Clip Studio Paint (loading only)
-
-This project hopes to eventually support converting between these applications:
-- IbisPaint
-- Photoshop
 
 ## Installation
 

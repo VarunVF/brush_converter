@@ -1,12 +1,11 @@
-import threading
-
 import customtkinter as ctk
 
+from gui.base_brush_tab import BaseBrushTab
 from gui.components import ConvertWidget, ModeSwitcher, SelectDirectory, SelectFile
 from photoshop.load_photoshop import load_photoshop
 
 
-class PhotoshopTabLoadFrame(ctk.CTkFrame):
+class PhotoshopTabLoadFrame(BaseBrushTab):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -26,33 +25,12 @@ class PhotoshopTabLoadFrame(ctk.CTkFrame):
         self.convert.grid(row=4, column=0, padx=10, pady=20, sticky="w")
 
     def convert_brush(self):
-        brush_file_path = self.select_brush_file.get_file()
-        extract_dir = self.select_extract_dir.get_dir()
+        rules = [
+            (self.select_brush_file.get_file(), "No .abr file is selected"),
+            (self.select_extract_dir.get_dir(), "No extract folder is selected"),
+        ]
 
-        # Validation
-        if not brush_file_path:
-            self.convert.configure_label("Error: No .abr file is selected", "red")
-            return
-        if not extract_dir:
-            self.convert.configure_label("Error: No extract folder is selected", "red")
-            return        
-
-        # Update UI to 'Loading'
-        self.convert.configure_label("Loading...", "blue")
-        self.update_idletasks()  # Force the UI to update the label NOW
-
-        # The background task
-        def run_conversion():
-            try:
-                load_photoshop(brush_file_path, extract_dir)
-                self.after(0, lambda: self.convert.configure_label("Conversion completed successfully!", "green"))
-            except Exception as e:
-                self.after(0, lambda: self.convert.configure_label(f"Error: {str(e)}", "red"))
-        
-        # Loading takes some time.
-        # Load on another thread to keep the GUI responsive.
-        threading.Thread(target=run_conversion, daemon=True).start()
-
+        self.run_threaded_conversion(load_photoshop, rules)
 
 class PhotoshopTabSaveFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):

@@ -1,11 +1,12 @@
 import customtkinter as ctk
 
+from gui.base_brush_tab import BaseBrushTab
 from gui.components import ConvertWidget, ModeSwitcher, SelectDirectory, SelectFile
 from procreate.load_procreate import load_procreate
 from procreate.save_procreate import save_procreate
 
 
-class ProcreateTabLoadFrame(ctk.CTkFrame):
+class ProcreateTabLoadFrame(BaseBrushTab):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -25,20 +26,15 @@ class ProcreateTabLoadFrame(ctk.CTkFrame):
         self.convert.grid(row=4, column=0, padx=10, pady=20, sticky="w")
 
     def convert_brush(self):
-        brush_file_path = self.select_brush_file.get_file()
-        extract_dir = self.select_extract_dir.get_dir()
-        try:
-            if not brush_file_path:
-                raise ValueError("No .brush file is selected")
-            if not extract_dir:
-                raise ValueError("No extract folder is selected")
-            load_procreate(brush_file_path, extract_dir)
-            self.convert.configure_label("Conversion completed successfully!", "green")
-        except Exception as e:
-            self.convert.configure_label(f"Error: {str(e)}", "red")
+        rules = [
+            (self.select_brush_file.get_file(), "No .brush file is selected"),
+            (self.select_extract_dir.get_dir(), "No extract folder is selected"),
+        ]
+
+        self.run_threaded_conversion(load_procreate, rules)
 
 
-class ProcreateTabSaveFrame(ctk.CTkFrame):
+class ProcreateTabSaveFrame(BaseBrushTab):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -64,20 +60,13 @@ class ProcreateTabSaveFrame(ctk.CTkFrame):
         self.convert.grid(row=6, column=0, padx=10, pady=20, sticky="w")
 
     def convert_brush(self):
-        json_file_path = self.select_json_file.get_file()
-        bitmap_dir = self.select_bitmap_dir.get_dir()
-        output_dir = self.select_output_dir.get_dir()
-        try:
-            if not json_file_path:
-                raise ValueError("No .json file is selected")
-            if not bitmap_dir:
-                raise ValueError("No bitmap folder is selected")
-            if not output_dir:
-                raise ValueError("No output folder is selected")
-            save_procreate(json_file_path, bitmap_dir, output_dir)
-            self.convert.configure_label("Conversion completed successfully!", "green")
-        except Exception as e:
-            self.convert.configure_label(f"Error: {str(e)}", "red")
+        rules = [
+            (self.select_json_file.get_file(), "No .json file is selected"),
+            (self.select_bitmap_dir.get_dir(), "No bitmap folder is selected"),
+            (self.select_output_dir.get_dir(), "No output folder is selected"),
+        ]
+        
+        self.run_threaded_conversion(save_procreate, rules)
 
 
 class ProcreateTab(ctk.CTkFrame):
