@@ -236,22 +236,28 @@ class BinaryParser:
     def _decode_pixels(f: BufferedReader, width: int, height: int) -> bytes:
         # Read the Scanline Table (2 bytes per row)
         # This table tells us the compressed length of every single row.
-        scanline_lengths = [int.from_bytes(f.read(2), "big") for _ in range(height)]
+        scanline_bytes = f.read(2 * height)
+        scanline_lengths = []
+        for i in range(0, 2 * height, 2):
+            row_length = int.from_bytes(scanline_bytes[i : i + 2], "big")
+            scanline_lengths.append(row_length)
         
         decoded = bytearray(width * height)
         curr_pos = 0
 
+        # Read all the rows at once
+        data = f.read(sum(scanline_lengths))
+        data_ptr = 0
         for row_length in scanline_lengths:
-            # Read an entire row of data
-            row_data = f.read(row_length)
+            row_data = data[data_ptr : data_ptr + row_length]
+            data_ptr += row_length
             row_ptr = 0
             
             while row_ptr < row_length:
-                # Access buffer directly
                 n_byte = row_data[row_ptr]
                 row_ptr += 1
                 
-                # Convert unsigned byte to signed int (-128 to 127)
+                # Convert unsigned byte to signed (-128 to 127)
                 n = n_byte if n_byte <= 127 else n_byte - 256
 
                 if 0 <= n <= 127:
