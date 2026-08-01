@@ -1,3 +1,4 @@
+import glob
 import os
 import sys
 
@@ -17,16 +18,21 @@ def check_args(gbr_file_path: str):
     # OUTPUT_DIR will be created if it does not exist
 
 
-def load_gbr(gbr_file_path: str, output_dir: str):
+def load_gbr(gbr_file_pattern: str, output_dir: str):
     os.makedirs(output_dir, exist_ok=True)
     
-    brush_info, img, bitmap_filename = read_gbr(gbr_file_path)
     json_path = os.path.join(output_dir, "brush.json")
-    image_path = os.path.join(output_dir, bitmap_filename)
+    brush_info: list[dict] = []
+
+    for gbr_file in glob.glob(gbr_file_pattern):
+        check_args(gbr_file)
+        current_brush_info, img, bitmap_filename = read_gbr(gbr_file)
+        brush_info += current_brush_info
+        image_path = os.path.join(output_dir, bitmap_filename)
+        img.save(image_path, "PNG")
 
     # Translation not applicable for this format.
     write_brush_json(brush_info, json_path)
-    img.save(image_path, "PNG")    
 
 
 def main():
@@ -36,10 +42,9 @@ def main():
     elif len(sys.argv) != 3:
         raise ValueError("Invalid number of arguments.\n" + usage())
     
-    gbr_file_path = sys.argv[1]
+    gbr_file_pattern = sys.argv[1]
     output_dir = sys.argv[2]
-    check_args(gbr_file_path)
-    load_gbr(gbr_file_path, output_dir)
+    load_gbr(gbr_file_pattern, output_dir)
 
 
 if __name__ == "__main__":

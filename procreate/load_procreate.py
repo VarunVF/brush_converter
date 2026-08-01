@@ -1,3 +1,4 @@
+import glob
 import os
 import sys
 
@@ -7,7 +8,7 @@ from brush_json import write_brush_json
 
 def usage():
     return ("Usage: python load_procreate.py BRUSH_FILE OUTPUT_DIR\n"
-            "    BRUSH_FILE: Path to the .brush file\n"
+            "    BRUSH_FILE: Path to the .brush file (wildcards supported)\n"
             "    OUTPUT_DIR: Directory to extract the contents\n")
 
 
@@ -17,13 +18,18 @@ def check_args(zip_file_path: str):
     # OUTPUT_DIR will be created if it does not exist
 
 
-def load_procreate(zip_file_path: str, extract_dir: str):
+def load_procreate(zip_file_pattern: str, extract_dir: str):
     os.makedirs(extract_dir, exist_ok=True)
     
     json_path = os.path.join(extract_dir, "brush.json")
-    brush_info = read_procreate_brush(zip_file_path, extract_dir)
+    brush_info: list[dict] = []
+
+    for zip_path in glob.glob(zip_file_pattern):
+        check_args(zip_path)
+        brush_info += read_procreate_brush(zip_path, extract_dir)
+
     write_brush_json(brush_info, json_path)
-    
+
 
 def main():
     if len(sys.argv) == 1:
@@ -32,10 +38,9 @@ def main():
     elif len(sys.argv) != 3:
         raise ValueError("Invalid number of arguments.\n" + usage())
     
-    zip_file_path = sys.argv[1]
+    zip_file_pattern = sys.argv[1]
     extract_dir = sys.argv[2]
-    check_args(zip_file_path)
-    load_procreate(zip_file_path, extract_dir)
+    load_procreate(zip_file_pattern, extract_dir)
 
 
 if __name__ == "__main__":

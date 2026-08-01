@@ -1,3 +1,4 @@
+import glob
 import os
 import sys
 
@@ -17,11 +18,17 @@ def check_args(file_or_dir):
     # OUTPUT_DIR will be created if it does not exist
 
 
-def load_photoshop(abr_file: str, output_dir: str):
+def load_photoshop(abr_file_pattern: str, output_dir: str):
     os.makedirs(output_dir, exist_ok=True)
 
-    brush_info = read_abr(abr_file, output_dir)
-    write_brush_json(brush_info, os.path.join(output_dir, "brush.json"))
+    json_path = os.path.join(output_dir, "brush.json")
+    brush_info: list[dict] = []
+
+    for abr_path in glob.glob(abr_file_pattern):
+        check_args(abr_path)
+        brush_info += read_abr(abr_path, output_dir)
+    
+    write_brush_json(brush_info, json_path)
 
 
 def main():
@@ -31,10 +38,9 @@ def main():
     elif len(sys.argv) != 3:
         raise ValueError("Invalid number of arguments\n" + usage())
     
-    abr_file = sys.argv[1]
+    abr_file_pattern = sys.argv[1]
     output_dir = sys.argv[2]
-    check_args(abr_file)
-    load_photoshop(abr_file, output_dir)
+    load_photoshop(abr_file_pattern, output_dir)
 
 
 if __name__ == "__main__":

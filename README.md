@@ -132,3 +132,4 @@ python -m photoshop.load_photoshop <ABR_FILE> <OUTPUT_DIR>
 ```
 
 Remember to replace `<ABR_FILE>` and `<OUTPUT_DIR>` with your actual file and desired output folder.
+Wildcards (`*`) are supported for loading multiple input brush files.
